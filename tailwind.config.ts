@@ -8,7 +8,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      screen:{
+      screens:{
         xsm: "500px",
         sm: "600px",
         md: "690px",
@@ -17,8 +17,13 @@ const config: Config = {
         xxl: "1265px",
       },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        textGray:"#71767b",
+        textGrayLight:"#e7e9ea",
+        borderGray:"#2f3336",
+        inputGray:"#202327",
+        iconBlue:"#1d9bf0",
+        iconGreen:"#00ba7c",
+        iconPink:"#f91880",
       },
     },
   },
