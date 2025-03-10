@@ -67,7 +67,7 @@ const menuList = [
 
 const LeftBar = () => {
   return (
-    <div className="h-screen flex flex-col items-center justify-between sticky top-0 pt-2 pb-8">
+    <div className="h-screen flex flex-col items-center gap-2 justify-between sticky top-0 pt-2 pb-8">
       <div className="flex flex-col gap-4 text-md items-center xxl:items-start">
         {/* Logo image */}
         <Link href="/" className="p-2 rounded-full hover:bg-[#181818] ">
@@ -91,7 +91,7 @@ const LeftBar = () => {
           href="/compose/post"
           className="bg-white text-black rounded-full w-12 h-12 flex items-center justify-center xxl:hidden"
         >
-          <Image path="icons/post.svg" alt="new post" width={24} height={24} tr={true} />
+          <Image className="text-black" path="icons/post.svg" alt="new post" width={24} height={24} />
         </Link>
         <Link
           href="/compose/post"
@@ -101,12 +101,12 @@ const LeftBar = () => {
         </Link>
       </div>
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 relative rounded-full overflow-hidden">
             <Image path="/general/avatar.png" alt="lama dev" width={100} height={100} tr={true} />
           </div>
-          <div className="hidden xxl:flex flex-col ">
+          <div className="hidden xxl:flex flex-col">
             <span className="font-bold">Lama Dev</span>
             <span className="text-sm text-textGray">@lamaWebDev</span>
           </div>
