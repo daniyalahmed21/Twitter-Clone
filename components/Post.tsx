@@ -2,8 +2,28 @@ import React from "react";
 import Image from "./Image";
 import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
+import { imagekit } from "@/utils";
 
-const Post = () => {
+interface FileDetailsResponse {
+  width: number;
+  height: number;
+  filePath: string;
+  url: string;
+  fileType: string;
+  customMetadata?: { sensitive: boolean };
+}
+
+const Post = async () => {
+  async function getFileDetails(fileId: string): Promise<FileDetailsResponse> {
+    return new Promise((res, rej) => {
+      imagekit.getFileDetails(fileId, function (error, result) {
+        if (error) rej(error);
+        else res(result as FileDetailsResponse);
+      });
+    });
+  }
+
+  const fileDetails = await getFileDetails("67d0847c432c4764166063cb");
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
       {/* POST TYPE */}
@@ -43,12 +63,22 @@ const Post = () => {
             </div>
             <PostInfo />
           </div>
-            {/* Text & Media */}
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa laboriosam doloremque quaerat, hic deserunt nisi illum inventore blanditiis sapiente adipisci! Hic, vero!</p>
-            <Image className="rounded-sm" path="general/post.jpeg" alt="post" width={600} height={400}/>
-            <PostInteractions/>
+          {/* Text & Media */}
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa
+            laboriosam doloremque quaerat, hic deserunt nisi illum inventore
+            blanditiis sapiente adipisci! Hic, vero!
+          </p>
+          {/* <Image className="rounded-sm" path="general/post.jpeg" alt="post" width={600} height={400}/> */}
+          {fileDetails && <Image
+          className={fileDetails.customMetadata?.sensitive===true ? "blur-lg" : "blur-0"}
+            path={fileDetails.filePath}
+            width={fileDetails.width}
+            height={fileDetails.height}
+            alt=""
+          />}
+          <PostInteractions />
         </div>
-        
       </div>
     </div>
   );
