@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import Image from "./Image";
 import { shareAction } from "@/action";
 import { default as NextImage } from "next/image";
@@ -7,7 +7,6 @@ import ImageEditor from "./ImageEditor";
 
 const Share = () => {
   const [media, setMedia] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [settings, setSettings] = useState<{
     type: "original" | "wide" | "square";
@@ -16,21 +15,17 @@ const Share = () => {
     type: "original",
     sensitive: false,
   });
+
+  console.log(media)
   const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(media?.type)
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setMedia(file);
     }
   };
 
-  useEffect(() => {
-    if (media) {
-      const objectUrl = URL.createObjectURL(media);
-      setPreviewUrl(objectUrl);
-
-      return () => URL.revokeObjectURL(objectUrl);
-    }
-  }, [media]);
+  const previewUrl = media ? URL.createObjectURL(media) : null;
 
   return (
     <form className="flex p-4 gap-4" action={(formData)=>shareAction(formData ,settings)}>
@@ -50,7 +45,7 @@ const Share = () => {
           placeholder="What is happening?!"
           className="bg-transparent text-xl border-none outline-none placeholder:text-textGray"
         />
-        {previewUrl && (
+        {media?.type.includes("image") && previewUrl && (
           <div className="relative rounded-md overflow-hidden">
             <NextImage
               src={previewUrl}
@@ -59,6 +54,7 @@ const Share = () => {
               alt="post"
               style={{ objectFit: "cover" }}
             />
+            <div className="h-8 w-8 flex items-center justify-center cursor-pointer font-bold absolute top-2 right-2 bg-black bg-opacity-70 rounded-full p-2 text-sm" onClick={()=>{setMedia(null)}}>X</div>
             <div
               className="absolute top-2 left-2 bg-black bg-opacity-50 text-white py-2 px-4 rounded-full font-bold text-sm cursor-pointer"
               onClick={() => setIsEditorOpen(true)}
@@ -67,6 +63,13 @@ const Share = () => {
             </div>
           </div>
         )}
+        {
+          media?.type.includes("video") && previewUrl && 
+          ( <div className="relative rounded-md overflow-hidden">
+            <video src={previewUrl} controls/>
+            <div className="h-8 w-8 flex items-center justify-center cursor-pointer font-bold absolute top-2 right-2 bg-black bg-opacity-70 rounded-full p-2 text-sm" onClick={()=>{setMedia(null)}}>X</div>
+          </div>)
+        }
         {isEditorOpen && previewUrl && (
           <ImageEditor
             onClose={() => setIsEditorOpen(false)}
@@ -83,6 +86,7 @@ const Share = () => {
               name="file"
               onChange={handleMediaChange}
               className="hidden"
+              accept="image/*,video/*"
             />
             <label htmlFor="file">
               <Image

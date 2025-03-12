@@ -2,21 +2,17 @@
 
 import { imagekit } from "./utils";
 
-type settingsType = {
-  type: "original" | "wide" | "square";
-  sensitive: boolean;
-};
-
 export const shareAction = async (
   formData: FormData,
-  settings: settingsType
+  settings: { type: "original" | "wide" | "square"; sensitive: boolean }
 ) => {
   const file = formData.get("file") as File;
+  // const desc = formData.get("desc") as string;
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  const transformation = `w-600,${
+  const transformation = `w-600, ${
     settings.type === "square"
       ? "ar-1-1"
       : settings.type === "wide"
@@ -24,19 +20,26 @@ export const shareAction = async (
       : ""
   }`;
 
+  console.log(file)
+
   imagekit.upload(
     {
+ 
+
       file: buffer,
       fileName: file.name,
       folder: "/posts",
-      transformation: {
-        pre: transformation,
-      },
+      ...(file.type.includes("image") && {
+        transformation: {
+          pre: transformation,
+        },
+      }),
       customMetadata: {
         sensitive: settings.sensitive,
       },
     },
     function (error, result) {
+      console.log(file)
       if (error) console.log(error);
       else console.log(result);
     }
