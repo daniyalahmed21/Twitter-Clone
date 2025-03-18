@@ -4,6 +4,7 @@ import PostInfo from "./PostInfo";
 import PostInteractions from "./PostInteractions";
 import { imagekit } from "@/utils";
 import Video from "./Video";
+import Link from "next/link";
 
 interface FileDetailsResponse {
   width: number;
@@ -14,17 +15,23 @@ interface FileDetailsResponse {
   customMetadata?: { sensitive: boolean };
 }
 
-const Post = async () => {
-  async function getFileDetails(fileId: string): Promise<FileDetailsResponse> {
-    return new Promise((res, rej) => {
-      imagekit.getFileDetails(fileId, function (error, result) {
-        if (error) rej(error);
-        else res(result as FileDetailsResponse);
+const Post = async ({ type }: { type?: "status" | "comment" }) => {
+  async function getFileDetails(fileId: string): Promise<FileDetailsResponse | null> {
+    try {
+      return new Promise((res, rej) => {
+        imagekit.getFileDetails(fileId, function (error, result) {
+          if (error) rej(error);
+          else res(result as FileDetailsResponse);
+        });
       });
-    });
+    } catch (error) {
+      console.error("Error fetching file details:", error);
+      return null;
+    }
   }
 
   const fileDetails = await getFileDetails("67d1cabd432c476416a33854");
+  
   return (
     <div className="p-4 border-y-[1px] border-borderGray">
       {/* POST TYPE */}
@@ -45,23 +52,29 @@ const Post = async () => {
       {/* Post Content */}
       <div className="flex gap-4">
         {/* Avatar */}
-        <div className="relative w-10 h-10 rounded-full overflow-hidden">
-          <Image
-            path="general/avatar.png"
-            width={100}
-            height={100}
-            tr={true}
-            alt="Avatar"
-          />
-        </div>
+        <Link href={`/lamaWebDev`}>
+          <div className="relative w-10 h-10 rounded-full overflow-hidden">
+            <Image
+              path="general/avatar.png"
+              width={100}
+              height={100}
+              tr={true}
+              alt="Avatar"
+            />
+          </div>
+        </Link>
         {/* Content */}
-        <div className="flex flex-1 flex-col gap-2">
+        <div className={`flex flex-1 flex-col gap-2`}>
           <div className="flex items-center gap-2 justify-between">
-            <div className="flex gap-2 flex-wrap items-center">
+          <Link href={`/lamaWebDev`}>
+            <div className={`flex ${type === "status" ? "flex-col gap-0 !items-start" : "flex-row"} gap-2 flex-wrap items-center`}>
               <h1 className="text-md font-bold">Lama Dev</h1>
-              <span className="text-textGray text-sm">@LamaDevWeb</span>
-              <span className="text-textGray text-sm">1 day ago</span>
+              <span className={`text-textGray ${type === "status" && "text-sm"}`}>@LamaDevWeb</span>
+              {type !== "status" && (
+                <span className="text-textGray text-sm">1 day ago</span>
+              )}
             </div>
+            </Link>
             <PostInfo />
           </div>
           {/* Text & Media */}
@@ -70,7 +83,6 @@ const Post = async () => {
             laboriosam doloremque quaerat, hic deserunt nisi illum inventore
             blanditiis sapiente adipisci! Hic, vero!
           </p>
-          {/* <Image className="rounded-sm" path="general/post.jpeg" alt="post" width={600} height={400}/> */}
           {fileDetails && fileDetails.fileType === "image" ? (
             <Image
               className={
@@ -83,7 +95,7 @@ const Post = async () => {
               height={fileDetails.height}
               alt=""
             />
-          ) : (
+          ) : fileDetails ? (
             <Video
               path={fileDetails.filePath}
               className={
@@ -92,6 +104,9 @@ const Post = async () => {
                   : "blur-0"
               }
             />
+          ) : null}
+           {type === "status" && (
+            <span className="text-textGray">8:41 PM · Mar 5, 2025</span>
           )}
           <PostInteractions />
         </div>

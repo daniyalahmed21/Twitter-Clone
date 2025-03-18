@@ -101,17 +101,28 @@ const LeftBar = () => {
         </Link>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 relative rounded-full overflow-hidden">
-            <Image path="/general/avatar.png" alt="lama dev" width={100} height={100} tr={true} />
-          </div>
-          <div className="hidden xxl:flex flex-col">
-            <span className="font-bold">Lama Dev</span>
-            <span className="text-sm text-textGray">@lamaWebDev</span>
-          </div>
+      <div className="flex items-center gap-3 p-3  rounded-full cursor-pointer transition-colors mt-auto">
+        <div className="w-10 h-10 relative rounded-full overflow-hidden">
+          <Image 
+            path="/general/avatar.png" 
+            alt="Lama Dev" 
+            width={100} 
+            height={100} 
+            tr={true} 
+            className="object-cover"
+          />
         </div>
-        <div className="hidden xxl:block cursor-pointer font-bold">...</div>
+        <div className="hidden xxl:flex flex-col flex-1">
+          <span className="font-bold">Lama Dev</span>
+          <span className="text-sm text-gray-400">@lamaWebDev</span>
+        </div>
+        <div className="hidden xxl:flex">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <circle cx="2" cy="8" r="2" />
+            <circle cx="8" cy="8" r="2" />
+            <circle cx="14" cy="8" r="2" />
+          </svg>
+        </div>
       </div>
     </div>
   );
