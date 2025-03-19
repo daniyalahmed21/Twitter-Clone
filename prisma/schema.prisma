@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @id
+  displayName String?
+  email String @unique
+  username String @unique
+  name String?
+  bio String?
+  job String?
+  location String?
+  img String?
+  cover String?
+
+
+  //Relations
+  posts Post[]
+  likes Like[]
+  saves SavedPosts[]
+}
+
+model Post{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  desc String?
+  img String?
+  video String?
+  isSensitive Boolean @default(false)
+
+  user User @relation(fields: [userid], references: [id])
+  userid String
+
+  rePostId Int?
+  rePost Post? @relation("rePost",fields: [rePostId], references: [id])
+  rePosts Post[] @relation("rePost")
+
+  parentPostId Int?
+  ParentPost Post? @relation("PostComments",fields: [parentPostId], references: [id])
+  comments Post[] @relation("PostComments")
+
+  likes Like[]
+  saves SavedPosts[]
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId String
+  postId Int
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+}
+
+model SavedPosts{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId String
+  postId Int
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+}
